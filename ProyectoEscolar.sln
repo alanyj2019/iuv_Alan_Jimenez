@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36401.2 d17.14
+VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoEscolar.Api", "ProyectoEscolar\ProyectoEscolar.Api.csproj", "{CC2D5A07-5A1A-41B7-BA65-83E8F8AB24E4}"
 EndProject
@@ -24,6 +24,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoEscolar.ModelosDTO", "ProyectoEscolar.ModelosDTO\ProyectoEscolar.ModelosDTO.csproj", "{A6D09174-BD80-4F05-A13B-4F75DBC2C7CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoEscolar.Utilidades", "ProyectoEscolar.Utilidades\ProyectoEscolar.Utilidades.csproj", "{9E6C5888-B604-4A38-95B2-E0CD4883C858}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06.Scripts", "06.Scripts", "{C8868524-124C-4D0A-9EB0-94DD064BB637}"
+	ProjectSection(SolutionItems) = preProject
+		ScriptBaseDatos.txt = ScriptBaseDatos.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

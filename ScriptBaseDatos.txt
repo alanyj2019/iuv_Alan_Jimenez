@@ -1,0 +1,806 @@
+USE [master]
+GO
+/****** Object:  Database [iuv]    Script Date: 27/10/2025 08:11:23 p. m. ******/
+CREATE DATABASE [iuv]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'iuv', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\iuv.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'iuv_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\iuv_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [iuv] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [iuv].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [iuv] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [iuv] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [iuv] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [iuv] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [iuv] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [iuv] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [iuv] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [iuv] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [iuv] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [iuv] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [iuv] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [iuv] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [iuv] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [iuv] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [iuv] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [iuv] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [iuv] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [iuv] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [iuv] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [iuv] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [iuv] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [iuv] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [iuv] SET RECOVERY FULL 
+GO
+ALTER DATABASE [iuv] SET  MULTI_USER 
+GO
+ALTER DATABASE [iuv] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [iuv] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [iuv] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [iuv] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [iuv] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [iuv] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'iuv', N'ON'
+GO
+ALTER DATABASE [iuv] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [iuv] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [iuv]
+GO
+/****** Object:  Schema [audit]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+CREATE SCHEMA [audit]
+GO
+/****** Object:  Schema [core]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+CREATE SCHEMA [core]
+GO
+/****** Object:  Schema [ops]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+CREATE SCHEMA [ops]
+GO
+/****** Object:  Schema [ref]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+CREATE SCHEMA [ref]
+GO
+/****** Object:  Table [ref].[CatEstatus]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ref].[CatEstatus](
+	[EstatusId] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](50) NOT NULL,
+	[Activo] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[EstatusId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [core].[Sucursal]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [core].[Sucursal](
+	[SucursalId] [int] IDENTITY(1,1) NOT NULL,
+	[Clave] [nvarchar](20) NOT NULL,
+	[Nombre] [nvarchar](120) NOT NULL,
+	[Activa] [bit] NOT NULL,
+	[Contrasena] [nvarchar](250) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[SucursalId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [core].[Proveedor]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [core].[Proveedor](
+	[ProveedorId] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](150) NOT NULL,
+	[RFC] [nvarchar](20) NULL,
+	[Activo] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ProveedorId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [core].[Usuario]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [core].[Usuario](
+	[UsuarioId] [int] IDENTITY(1,1) NOT NULL,
+	[SucursalId] [int] NOT NULL,
+	[RolId] [int] NOT NULL,
+	[Usuario] [nvarchar](80) NOT NULL,
+	[Nombre] [nvarchar](150) NOT NULL,
+	[Activo] [bit] NOT NULL,
+	[Contrasena] [nvarchar](250) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UsuarioId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ops].[Pedido]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ops].[Pedido](
+	[PedidoId] [bigint] IDENTITY(1,1) NOT NULL,
+	[Folio] [nvarchar](40) NOT NULL,
+	[ProveedorId] [int] NOT NULL,
+	[SucursalId] [int] NOT NULL,
+	[EstatusId] [int] NOT NULL,
+	[FechaPedido] [datetime2](0) NOT NULL,
+	[TotalEsperadoPzas] [decimal](18, 2) NULL,
+	[TotalEsperadoKg] [decimal](18, 3) NULL,
+	[Observaciones] [nvarchar](400) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PedidoId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ops].[Recepcion]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ops].[Recepcion](
+	[RecepcionId] [bigint] IDENTITY(1,1) NOT NULL,
+	[PedidoId] [bigint] NOT NULL,
+	[SucursalId] [int] NOT NULL,
+	[UsuarioId] [int] NOT NULL,
+	[ChoferId] [int] NULL,
+	[EstatusId] [int] NOT NULL,
+	[FechaInicio] [datetime2](0) NOT NULL,
+	[FechaCierre] [datetime2](0) NULL,
+	[TotalRecibidoPzas] [decimal](18, 2) NULL,
+	[TotalRecibidoKg] [decimal](18, 3) NULL,
+	[Observaciones] [nvarchar](400) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[RecepcionId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [ops].[vw_Recepciones]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+/* =======================
+   Vista de reporte (aplanada)
+   ======================= */
+CREATE   VIEW [ops].[vw_Recepciones] AS
+SELECT
+  r.RecepcionId, r.PedidoId, p.Folio AS FolioPedido,
+  s.Nombre AS Sucursal, pr.Nombre AS Proveedor,
+  eu.Nombre AS EstatusRecepcion, r.FechaInicio, r.FechaCierre,
+  r.TotalRecibidoPzas, r.TotalRecibidoKg,
+  u.Usuario  AS UsuarioRecepcion
+FROM ops.Recepcion r
+JOIN ops.Pedido     p  ON r.PedidoId  = p.PedidoId
+JOIN core.Sucursal  s  ON r.SucursalId= s.SucursalId
+JOIN core.Proveedor pr ON p.ProveedorId= pr.ProveedorId
+JOIN ref.CatEstatus eu ON r.EstatusId = eu.EstatusId
+JOIN core.Usuario   u  ON r.UsuarioId = u.UsuarioId;
+GO
+/****** Object:  Table [core].[Chofer]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [core].[Chofer](
+	[ChoferId] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](120) NOT NULL,
+	[Licencia] [nvarchar](40) NULL,
+	[Activo] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ChoferId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [core].[Producto]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [core].[Producto](
+	[ProductoId] [int] IDENTITY(1,1) NOT NULL,
+	[SKU] [nvarchar](40) NOT NULL,
+	[Descripcion] [nvarchar](200) NOT NULL,
+	[UnidadId] [int] NOT NULL,
+	[Activo] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ProductoId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Logs]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Logs](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Message] [nvarchar](max) NULL,
+	[MessageTemplate] [nvarchar](max) NULL,
+	[Level] [nvarchar](max) NULL,
+	[TimeStamp] [datetime] NULL,
+	[Exception] [nvarchar](max) NULL,
+	[Properties] [nvarchar](max) NULL,
+	[UserName] [nvarchar](256) NULL,
+	[MachineName] [nvarchar](128) NULL,
+	[SourceContext] [nvarchar](512) NULL,
+ CONSTRAINT [PK_Logs] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [ops].[Factura]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ops].[Factura](
+	[FacturaId] [bigint] IDENTITY(1,1) NOT NULL,
+	[PedidoId] [bigint] NOT NULL,
+	[Folio] [nvarchar](40) NOT NULL,
+	[Importe] [decimal](18, 2) NOT NULL,
+	[FechaFactura] [date] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FacturaId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ops].[Incidencia]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ops].[Incidencia](
+	[IncidenciaId] [bigint] IDENTITY(1,1) NOT NULL,
+	[RecepcionId] [bigint] NOT NULL,
+	[RecepcionItemId] [bigint] NULL,
+	[TipoIncidenciaId] [int] NOT NULL,
+	[SeveridadId] [int] NOT NULL,
+	[Descripcion] [nvarchar](400) NULL,
+	[EvidenciaUrl] [nvarchar](400) NULL,
+	[ReportadaPorUsuario] [int] NOT NULL,
+	[ReportadaUTC] [datetime2](0) NOT NULL,
+	[EnviadaACedis] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[IncidenciaId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ops].[PedidoItem]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ops].[PedidoItem](
+	[PedidoItemId] [bigint] IDENTITY(1,1) NOT NULL,
+	[PedidoId] [bigint] NOT NULL,
+	[ProductoId] [int] NOT NULL,
+	[CantidadEsperada] [decimal](18, 3) NULL,
+	[PesoEsperadoKg] [decimal](18, 3) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PedidoItemId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ops].[RecepcionItem]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ops].[RecepcionItem](
+	[RecepcionItemId] [bigint] IDENTITY(1,1) NOT NULL,
+	[RecepcionId] [bigint] NOT NULL,
+	[ProductoId] [int] NOT NULL,
+	[CantidadEsperada] [decimal](18, 3) NULL,
+	[CantidadRecibida] [decimal](18, 3) NULL,
+	[PesoEsperadoKg] [decimal](18, 3) NULL,
+	[PesoRecibidoKg] [decimal](18, 3) NULL,
+	[EstatusId] [int] NOT NULL,
+	[DiferenciaCant]  AS (isnull([CantidadRecibida],(0))-isnull([CantidadEsperada],(0))) PERSISTED,
+	[DiferenciaKg]  AS (isnull([PesoRecibidoKg],(0))-isnull([PesoEsperadoKg],(0))) PERSISTED,
+PRIMARY KEY CLUSTERED 
+(
+	[RecepcionItemId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ref].[CatRol]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ref].[CatRol](
+	[RolId] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](40) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[RolId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ref].[CatSeveridad]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ref].[CatSeveridad](
+	[SeveridadId] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](20) NOT NULL,
+	[Activo] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[SeveridadId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ref].[CatTipoIncidencia]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ref].[CatTipoIncidencia](
+	[TipoIncidenciaId] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](80) NOT NULL,
+	[Activo] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[TipoIncidenciaId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [ref].[CatUnidad]    Script Date: 27/10/2025 08:11:24 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [ref].[CatUnidad](
+	[UnidadId] [int] IDENTITY(1,1) NOT NULL,
+	[Clave] [nvarchar](10) NOT NULL,
+	[Nombre] [nvarchar](40) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UnidadId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [core].[Sucursal] ON 
+GO
+INSERT [core].[Sucursal] ([SucursalId], [Clave], [Nombre], [Activa], [Contrasena]) VALUES (1, N'Corp', N'Corporativo', 1, NULL)
+GO
+SET IDENTITY_INSERT [core].[Sucursal] OFF
+GO
+SET IDENTITY_INSERT [core].[Usuario] ON 
+GO
+INSERT [core].[Usuario] ([UsuarioId], [SucursalId], [RolId], [Usuario], [Nombre], [Activo], [Contrasena]) VALUES (2, 1, 1, N'Admin', N'Alan Jimenez', 1, N'$2a$12$ypAaMw6o6nZxxzmB5pDP5.kXXfO8eZSo8VHfu0UHavX9n4U61biFS')
+GO
+SET IDENTITY_INSERT [core].[Usuario] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Logs] ON 
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (1, N'Iniciando la aplicación ProyectoEscolar API', N'Iniciando la aplicación ProyectoEscolar API', N'Information', CAST(N'2025-10-27T19:29:50.097' AS DateTime), NULL, N'<properties><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', NULL)
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (2, N'Now listening on: "http://localhost:5111"', N'Now listening on: {address}', N'Information', CAST(N'2025-10-27T19:29:50.827' AS DateTime), NULL, N'<properties><property key=''address''>http://localhost:5111</property><property key=''EventId''><structure type=''''><property key=''Id''>14</property><property key=''Name''>ListeningOnAddress</property></structure></property><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (3, N'Application started. Press Ctrl+C to shut down.', N'Application started. Press Ctrl+C to shut down.', N'Information', CAST(N'2025-10-27T19:29:51.033' AS DateTime), NULL, N'<properties><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (4, N'Hosting environment: "Development"', N'Hosting environment: {EnvName}', N'Information', CAST(N'2025-10-27T19:29:51.040' AS DateTime), NULL, N'<properties><property key=''EnvName''>Development</property><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (5, N'Content root path: "C:\Users\Alan\source\repos\ProyectoEscolar\ProyectoEscolar"', N'Content root path: {ContentRoot}', N'Information', CAST(N'2025-10-27T19:29:51.047' AS DateTime), NULL, N'<properties><property key=''ContentRoot''>C:\Users\Alan\source\repos\ProyectoEscolar\ProyectoEscolar</property><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (6, N'HTTP "GET" "/swagger/index.html" respondió 200 en 188.1278 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:29:51.783' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/swagger/index.html</property><property key=''StatusCode''>200</property><property key=''Elapsed''>188.1278</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO5UN82BC:00000001</property><property key=''ConnectionId''>0HNGLO5UN82BC</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (7, N'HTTP "GET" "/swagger/v1/swagger.json" respondió 200 en 12.5910 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:29:51.927' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/swagger/v1/swagger.json</property><property key=''StatusCode''>200</property><property key=''Elapsed''>12.591</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO5UN82BD:00000002</property><property key=''ConnectionId''>0HNGLO5UN82BD</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (8, N'Probando diferentes niveles de log', N'Probando diferentes niveles de log', N'Information', CAST(N'2025-10-27T19:29:58.570' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>2b19c470-fe6b-41d8-adc9-6fba31caa625</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BE:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO5UN82BE</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (9, N'Este es un mensaje de Warning', N'Este es un mensaje de Warning', N'Warning', CAST(N'2025-10-27T19:29:58.590' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>2b19c470-fe6b-41d8-adc9-6fba31caa625</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BE:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO5UN82BE</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (10, N'Este es un mensaje de Error de prueba', N'Este es un mensaje de Error de prueba', N'Error', CAST(N'2025-10-27T19:29:58.600' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>2b19c470-fe6b-41d8-adc9-6fba31caa625</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BE:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO5UN82BE</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (11, N'Excepción capturada durante prueba de logs', N'Excepción capturada durante prueba de logs', N'Error', CAST(N'2025-10-27T19:29:58.680' AS DateTime), N'System.InvalidOperationException: Excepción de prueba para verificar logging
+   at ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs() in C:\Users\Alan\source\repos\ProyectoEscolar\ProyectoEscolar\Controllers\AutenticacionController.cs:line 97', N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>2b19c470-fe6b-41d8-adc9-6fba31caa625</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BE:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO5UN82BE</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (12, N'HTTP "GET" "/api/Autenticacion/test-logs" respondió 200 en 741.4609 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:29:58.803' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''StatusCode''>200</property><property key=''Elapsed''>741.4609</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO5UN82BE:00000001</property><property key=''ConnectionId''>0HNGLO5UN82BE</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (13, N'Iniciando prueba de conexión a la base de datos', N'Iniciando prueba de conexión a la base de datos', N'Information', CAST(N'2025-10-27T19:31:33.273' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>67a80cdb-1d4d-4e02-93b9-60a4c4605179</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestConnection (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BF:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-connection</property><property key=''ConnectionId''>0HNGLO5UN82BF</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (14, N'The ''"bool"'' property ''"Activo"'' on entity type ''"CatRol"'' is configured with a database-generated default, but has no configured sentinel value. The database-generated default will always be used for inserts when the property has the value ''"False"'', since this is the CLR default for the ''"bool"'' type. Consider using a nullable type, using a nullable backing field, or setting the sentinel value for the property to ensure the database default is used when, and only when, appropriate. See https://aka.ms/efcore-docs-default-values for more information.', N'The ''{type}'' property ''{property}'' on entity type ''{entityType}'' is configured with a database-generated default, but has no configured sentinel value. The database-generated default will always be used for inserts when the property has the value ''{defaultValue}'', since this is the CLR default for the ''{type2}'' type. Consider using a nullable type, using a nullable backing field, or setting the sentinel value for the property to ensure the database default is used when, and only when, appropriate. See https://aka.ms/efcore-docs-default-values for more information.', N'Warning', CAST(N'2025-10-27T19:31:34.160' AS DateTime), NULL, N'<properties><property key=''type''>bool</property><property key=''property''>Activo</property><property key=''entityType''>CatRol</property><property key=''defaultValue''>False</property><property key=''type2''>bool</property><property key=''EventId''><structure type=''''><property key=''Id''>20601</property><property key=''Name''>Microsoft.EntityFrameworkCore.Model.Validation.BoolWithDefaultWarning</property></structure></property><property key=''SourceContext''>Microsoft.EntityFrameworkCore.Model.Validation</property><property key=''ActionId''>67a80cdb-1d4d-4e02-93b9-60a4c4605179</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestConnection (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BF:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-connection</property><property key=''ConnectionId''>0HNGLO5UN82BF</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.EntityFrameworkCore.Model.Validation')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (15, N'The ''"bool"'' property ''"Activo"'' on entity type ''"Sucursal"'' is configured with a database-generated default, but has no configured sentinel value. The database-generated default will always be used for inserts when the property has the value ''"False"'', since this is the CLR default for the ''"bool"'' type. Consider using a nullable type, using a nullable backing field, or setting the sentinel value for the property to ensure the database default is used when, and only when, appropriate. See https://aka.ms/efcore-docs-default-values for more information.', N'The ''{type}'' property ''{property}'' on entity type ''{entityType}'' is configured with a database-generated default, but has no configured sentinel value. The database-generated default will always be used for inserts when the property has the value ''{defaultValue}'', since this is the CLR default for the ''{type2}'' type. Consider using a nullable type, using a nullable backing field, or setting the sentinel value for the property to ensure the database default is used when, and only when, appropriate. See https://aka.ms/efcore-docs-default-values for more information.', N'Warning', CAST(N'2025-10-27T19:31:34.173' AS DateTime), NULL, N'<properties><property key=''type''>bool</property><property key=''property''>Activo</property><property key=''entityType''>Sucursal</property><property key=''defaultValue''>False</property><property key=''type2''>bool</property><property key=''EventId''><structure type=''''><property key=''Id''>20601</property><property key=''Name''>Microsoft.EntityFrameworkCore.Model.Validation.BoolWithDefaultWarning</property></structure></property><property key=''SourceContext''>Microsoft.EntityFrameworkCore.Model.Validation</property><property key=''ActionId''>67a80cdb-1d4d-4e02-93b9-60a4c4605179</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestConnection (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BF:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-connection</property><property key=''ConnectionId''>0HNGLO5UN82BF</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.EntityFrameworkCore.Model.Validation')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (16, N'The ''"bool"'' property ''"Activo"'' on entity type ''"Usuario"'' is configured with a database-generated default, but has no configured sentinel value. The database-generated default will always be used for inserts when the property has the value ''"False"'', since this is the CLR default for the ''"bool"'' type. Consider using a nullable type, using a nullable backing field, or setting the sentinel value for the property to ensure the database default is used when, and only when, appropriate. See https://aka.ms/efcore-docs-default-values for more information.', N'The ''{type}'' property ''{property}'' on entity type ''{entityType}'' is configured with a database-generated default, but has no configured sentinel value. The database-generated default will always be used for inserts when the property has the value ''{defaultValue}'', since this is the CLR default for the ''{type2}'' type. Consider using a nullable type, using a nullable backing field, or setting the sentinel value for the property to ensure the database default is used when, and only when, appropriate. See https://aka.ms/efcore-docs-default-values for more information.', N'Warning', CAST(N'2025-10-27T19:31:34.187' AS DateTime), NULL, N'<properties><property key=''type''>bool</property><property key=''property''>Activo</property><property key=''entityType''>Usuario</property><property key=''defaultValue''>False</property><property key=''type2''>bool</property><property key=''EventId''><structure type=''''><property key=''Id''>20601</property><property key=''Name''>Microsoft.EntityFrameworkCore.Model.Validation.BoolWithDefaultWarning</property></structure></property><property key=''SourceContext''>Microsoft.EntityFrameworkCore.Model.Validation</property><property key=''ActionId''>67a80cdb-1d4d-4e02-93b9-60a4c4605179</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestConnection (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BF:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-connection</property><property key=''ConnectionId''>0HNGLO5UN82BF</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.EntityFrameworkCore.Model.Validation')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (17, N'Prueba de conexión exitosa. Usuarios encontrados: 1', N'Prueba de conexión exitosa. Usuarios encontrados: {UserCount}', N'Information', CAST(N'2025-10-27T19:31:39.973' AS DateTime), NULL, N'<properties><property key=''UserCount''>1</property><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>67a80cdb-1d4d-4e02-93b9-60a4c4605179</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestConnection (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO5UN82BF:00000001</property><property key=''RequestPath''>/api/Autenticacion/test-connection</property><property key=''ConnectionId''>0HNGLO5UN82BF</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (18, N'HTTP "GET" "/api/Autenticacion/test-connection" respondió 200 en 6796.7962 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:31:39.997' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/api/Autenticacion/test-connection</property><property key=''StatusCode''>200</property><property key=''Elapsed''>6796.7962</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO5UN82BF:00000001</property><property key=''ConnectionId''>0HNGLO5UN82BF</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (19, N'Iniciando la aplicación ProyectoEscolar API', N'Iniciando la aplicación ProyectoEscolar API', N'Information', CAST(N'2025-10-27T19:33:01.843' AS DateTime), NULL, N'<properties><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', NULL)
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (20, N'Now listening on: "http://localhost:5111"', N'Now listening on: {address}', N'Information', CAST(N'2025-10-27T19:33:02.300' AS DateTime), NULL, N'<properties><property key=''address''>http://localhost:5111</property><property key=''EventId''><structure type=''''><property key=''Id''>14</property><property key=''Name''>ListeningOnAddress</property></structure></property><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (21, N'Application started. Press Ctrl+C to shut down.', N'Application started. Press Ctrl+C to shut down.', N'Information', CAST(N'2025-10-27T19:33:02.553' AS DateTime), NULL, N'<properties><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (22, N'Hosting environment: "Development"', N'Hosting environment: {EnvName}', N'Information', CAST(N'2025-10-27T19:33:02.563' AS DateTime), NULL, N'<properties><property key=''EnvName''>Development</property><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (23, N'Content root path: "C:\Users\Alan\source\repos\ProyectoEscolar\ProyectoEscolar"', N'Content root path: {ContentRoot}', N'Information', CAST(N'2025-10-27T19:33:02.570' AS DateTime), NULL, N'<properties><property key=''ContentRoot''>C:\Users\Alan\source\repos\ProyectoEscolar\ProyectoEscolar</property><property key=''SourceContext''>Microsoft.Hosting.Lifetime</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Microsoft.Hosting.Lifetime')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (24, N'HTTP "GET" "/swagger/index.html" respondió 200 en 117.4783 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:33:03.120' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/swagger/index.html</property><property key=''StatusCode''>200</property><property key=''Elapsed''>117.4783</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO7NN6PB4:00000001</property><property key=''ConnectionId''>0HNGLO7NN6PB4</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (25, N'HTTP "GET" "/swagger/v1/swagger.json" respondió 200 en 11.1201 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:33:03.247' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/swagger/v1/swagger.json</property><property key=''StatusCode''>200</property><property key=''Elapsed''>11.1201</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO7NN6PB6:00000002</property><property key=''ConnectionId''>0HNGLO7NN6PB6</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (26, N'Probando diferentes niveles de log', N'Probando diferentes niveles de log', N'Information', CAST(N'2025-10-27T19:33:08.200' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>d7084a21-b65c-4e89-81e7-f7eb349a9983</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO7NN6PB6:00000003</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO7NN6PB6</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (27, N'Este es un mensaje de Warning', N'Este es un mensaje de Warning', N'Warning', CAST(N'2025-10-27T19:33:08.220' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>d7084a21-b65c-4e89-81e7-f7eb349a9983</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO7NN6PB6:00000003</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO7NN6PB6</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (28, N'Este es un mensaje de Error de prueba', N'Este es un mensaje de Error de prueba', N'Error', CAST(N'2025-10-27T19:33:08.230' AS DateTime), NULL, N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>d7084a21-b65c-4e89-81e7-f7eb349a9983</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO7NN6PB6:00000003</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO7NN6PB6</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (29, N'Excepción capturada durante prueba de logs', N'Excepción capturada durante prueba de logs', N'Error', CAST(N'2025-10-27T19:33:08.290' AS DateTime), N'System.InvalidOperationException: Excepción de prueba para verificar logging
+   at ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs() in C:\Users\Alan\source\repos\ProyectoEscolar\ProyectoEscolar\Controllers\AutenticacionController.cs:line 42', N'<properties><property key=''SourceContext''>ProyectoEscolar.Api.Controllers.AutenticacionController</property><property key=''ActionId''>d7084a21-b65c-4e89-81e7-f7eb349a9983</property><property key=''ActionName''>ProyectoEscolar.Api.Controllers.AutenticacionController.TestLogs (ProyectoEscolar.Api)</property><property key=''RequestId''>0HNGLO7NN6PB6:00000003</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''ConnectionId''>0HNGLO7NN6PB6</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'ProyectoEscolar.Api.Controllers.AutenticacionController')
+GO
+INSERT [dbo].[Logs] ([Id], [Message], [MessageTemplate], [Level], [TimeStamp], [Exception], [Properties], [UserName], [MachineName], [SourceContext]) VALUES (30, N'HTTP "GET" "/api/Autenticacion/test-logs" respondió 200 en 680.2793 ms', N'HTTP {RequestMethod} {RequestPath} respondió {StatusCode} en {Elapsed:0.0000} ms', N'Information', CAST(N'2025-10-27T19:33:08.410' AS DateTime), NULL, N'<properties><property key=''RequestMethod''>GET</property><property key=''RequestPath''>/api/Autenticacion/test-logs</property><property key=''StatusCode''>200</property><property key=''Elapsed''>680.2793</property><property key=''SourceContext''>Serilog.AspNetCore.RequestLoggingMiddleware</property><property key=''RequestId''>0HNGLO7NN6PB6:00000003</property><property key=''ConnectionId''>0HNGLO7NN6PB6</property><property key=''MachineName''>DESKTOP-86PA6N4</property><property key=''EnvironmentName''>Development</property></properties>', NULL, N'DESKTOP-86PA6N4', N'Serilog.AspNetCore.RequestLoggingMiddleware')
+GO
+SET IDENTITY_INSERT [dbo].[Logs] OFF
+GO
+SET IDENTITY_INSERT [ref].[CatRol] ON 
+GO
+INSERT [ref].[CatRol] ([RolId], [Nombre]) VALUES (1, N'Administrador')
+GO
+INSERT [ref].[CatRol] ([RolId], [Nombre]) VALUES (3, N'Operativo')
+GO
+INSERT [ref].[CatRol] ([RolId], [Nombre]) VALUES (2, N'Supervisor')
+GO
+SET IDENTITY_INSERT [ref].[CatRol] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_Producto_SKU]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [core].[Producto] ADD  CONSTRAINT [UX_Producto_SKU] UNIQUE NONCLUSTERED 
+(
+	[SKU] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_Sucursal]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [core].[Sucursal] ADD  CONSTRAINT [UX_Sucursal] UNIQUE NONCLUSTERED 
+(
+	[Clave] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_Usuario]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [core].[Usuario] ADD  CONSTRAINT [UX_Usuario] UNIQUE NONCLUSTERED 
+(
+	[Usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_Factura]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ops].[Factura] ADD  CONSTRAINT [UX_Factura] UNIQUE NONCLUSTERED 
+(
+	[PedidoId] ASC,
+	[Folio] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Incidencia_Rec]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+CREATE NONCLUSTERED INDEX [IX_Incidencia_Rec] ON [ops].[Incidencia]
+(
+	[RecepcionId] ASC,
+	[TipoIncidenciaId] ASC,
+	[SeveridadId] ASC,
+	[ReportadaUTC] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_Pedido_Folio]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ops].[Pedido] ADD  CONSTRAINT [UX_Pedido_Folio] UNIQUE NONCLUSTERED 
+(
+	[Folio] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Pedido_Basics]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+CREATE NONCLUSTERED INDEX [IX_Pedido_Basics] ON [ops].[Pedido]
+(
+	[ProveedorId] ASC,
+	[SucursalId] ASC,
+	[EstatusId] ASC,
+	[FechaPedido] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UX_PedidoItem]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ops].[PedidoItem] ADD  CONSTRAINT [UX_PedidoItem] UNIQUE NONCLUSTERED 
+(
+	[PedidoId] ASC,
+	[ProductoId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_PedidoItem_Pedido]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+CREATE NONCLUSTERED INDEX [IX_PedidoItem_Pedido] ON [ops].[PedidoItem]
+(
+	[PedidoId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Recepcion_Basics]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+CREATE NONCLUSTERED INDEX [IX_Recepcion_Basics] ON [ops].[Recepcion]
+(
+	[PedidoId] ASC,
+	[SucursalId] ASC,
+	[EstatusId] ASC,
+	[FechaInicio] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UX_RecepcionItem]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ops].[RecepcionItem] ADD  CONSTRAINT [UX_RecepcionItem] UNIQUE NONCLUSTERED 
+(
+	[RecepcionId] ASC,
+	[ProductoId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_RecepcionItem_Rec]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+CREATE NONCLUSTERED INDEX [IX_RecepcionItem_Rec] ON [ops].[RecepcionItem]
+(
+	[RecepcionId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_CatEstatus]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ref].[CatEstatus] ADD  CONSTRAINT [UX_CatEstatus] UNIQUE NONCLUSTERED 
+(
+	[Nombre] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_CatRol]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ref].[CatRol] ADD  CONSTRAINT [UX_CatRol] UNIQUE NONCLUSTERED 
+(
+	[Nombre] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_CatSeveridad]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ref].[CatSeveridad] ADD  CONSTRAINT [UX_CatSeveridad] UNIQUE NONCLUSTERED 
+(
+	[Nombre] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_CatTipoIncidencia]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ref].[CatTipoIncidencia] ADD  CONSTRAINT [UX_CatTipoIncidencia] UNIQUE NONCLUSTERED 
+(
+	[Nombre] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UX_CatUnidad]    Script Date: 27/10/2025 08:11:26 p. m. ******/
+ALTER TABLE [ref].[CatUnidad] ADD  CONSTRAINT [UX_CatUnidad] UNIQUE NONCLUSTERED 
+(
+	[Clave] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [core].[Chofer] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [core].[Producto] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [core].[Proveedor] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [core].[Sucursal] ADD  DEFAULT ((1)) FOR [Activa]
+GO
+ALTER TABLE [core].[Usuario] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [ops].[Incidencia] ADD  DEFAULT (sysutcdatetime()) FOR [ReportadaUTC]
+GO
+ALTER TABLE [ops].[Incidencia] ADD  DEFAULT ((0)) FOR [EnviadaACedis]
+GO
+ALTER TABLE [ops].[Pedido] ADD  DEFAULT (sysutcdatetime()) FOR [FechaPedido]
+GO
+ALTER TABLE [ops].[Recepcion] ADD  DEFAULT (sysutcdatetime()) FOR [FechaInicio]
+GO
+ALTER TABLE [ref].[CatEstatus] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [ref].[CatSeveridad] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [ref].[CatTipoIncidencia] ADD  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [core].[Producto]  WITH CHECK ADD  CONSTRAINT [FK_Producto_Unidad] FOREIGN KEY([UnidadId])
+REFERENCES [ref].[CatUnidad] ([UnidadId])
+GO
+ALTER TABLE [core].[Producto] CHECK CONSTRAINT [FK_Producto_Unidad]
+GO
+ALTER TABLE [core].[Usuario]  WITH CHECK ADD  CONSTRAINT [FK_Usuario_Rol] FOREIGN KEY([RolId])
+REFERENCES [ref].[CatRol] ([RolId])
+GO
+ALTER TABLE [core].[Usuario] CHECK CONSTRAINT [FK_Usuario_Rol]
+GO
+ALTER TABLE [core].[Usuario]  WITH CHECK ADD  CONSTRAINT [FK_Usuario_Sucursal] FOREIGN KEY([SucursalId])
+REFERENCES [core].[Sucursal] ([SucursalId])
+GO
+ALTER TABLE [core].[Usuario] CHECK CONSTRAINT [FK_Usuario_Sucursal]
+GO
+ALTER TABLE [ops].[Factura]  WITH CHECK ADD  CONSTRAINT [FK_Factura_Pedido] FOREIGN KEY([PedidoId])
+REFERENCES [ops].[Pedido] ([PedidoId])
+GO
+ALTER TABLE [ops].[Factura] CHECK CONSTRAINT [FK_Factura_Pedido]
+GO
+ALTER TABLE [ops].[Incidencia]  WITH CHECK ADD  CONSTRAINT [FK_Incidencia_Recepcion] FOREIGN KEY([RecepcionId])
+REFERENCES [ops].[Recepcion] ([RecepcionId])
+GO
+ALTER TABLE [ops].[Incidencia] CHECK CONSTRAINT [FK_Incidencia_Recepcion]
+GO
+ALTER TABLE [ops].[Incidencia]  WITH CHECK ADD  CONSTRAINT [FK_Incidencia_RecepcionIt] FOREIGN KEY([RecepcionItemId])
+REFERENCES [ops].[RecepcionItem] ([RecepcionItemId])
+GO
+ALTER TABLE [ops].[Incidencia] CHECK CONSTRAINT [FK_Incidencia_RecepcionIt]
+GO
+ALTER TABLE [ops].[Incidencia]  WITH CHECK ADD  CONSTRAINT [FK_Incidencia_Severidad] FOREIGN KEY([SeveridadId])
+REFERENCES [ref].[CatSeveridad] ([SeveridadId])
+GO
+ALTER TABLE [ops].[Incidencia] CHECK CONSTRAINT [FK_Incidencia_Severidad]
+GO
+ALTER TABLE [ops].[Incidencia]  WITH CHECK ADD  CONSTRAINT [FK_Incidencia_Tipo] FOREIGN KEY([TipoIncidenciaId])
+REFERENCES [ref].[CatTipoIncidencia] ([TipoIncidenciaId])
+GO
+ALTER TABLE [ops].[Incidencia] CHECK CONSTRAINT [FK_Incidencia_Tipo]
+GO
+ALTER TABLE [ops].[Incidencia]  WITH CHECK ADD  CONSTRAINT [FK_Incidencia_Usuario] FOREIGN KEY([ReportadaPorUsuario])
+REFERENCES [core].[Usuario] ([UsuarioId])
+GO
+ALTER TABLE [ops].[Incidencia] CHECK CONSTRAINT [FK_Incidencia_Usuario]
+GO
+ALTER TABLE [ops].[Pedido]  WITH CHECK ADD  CONSTRAINT [FK_Pedido_Estatus] FOREIGN KEY([EstatusId])
+REFERENCES [ref].[CatEstatus] ([EstatusId])
+GO
+ALTER TABLE [ops].[Pedido] CHECK CONSTRAINT [FK_Pedido_Estatus]
+GO
+ALTER TABLE [ops].[Pedido]  WITH CHECK ADD  CONSTRAINT [FK_Pedido_Proveedor] FOREIGN KEY([ProveedorId])
+REFERENCES [core].[Proveedor] ([ProveedorId])
+GO
+ALTER TABLE [ops].[Pedido] CHECK CONSTRAINT [FK_Pedido_Proveedor]
+GO
+ALTER TABLE [ops].[Pedido]  WITH CHECK ADD  CONSTRAINT [FK_Pedido_Sucursal] FOREIGN KEY([SucursalId])
+REFERENCES [core].[Sucursal] ([SucursalId])
+GO
+ALTER TABLE [ops].[Pedido] CHECK CONSTRAINT [FK_Pedido_Sucursal]
+GO
+ALTER TABLE [ops].[PedidoItem]  WITH CHECK ADD  CONSTRAINT [FK_PedidoItem_Pedido] FOREIGN KEY([PedidoId])
+REFERENCES [ops].[Pedido] ([PedidoId])
+ON DELETE CASCADE
+GO
+ALTER TABLE [ops].[PedidoItem] CHECK CONSTRAINT [FK_PedidoItem_Pedido]
+GO
+ALTER TABLE [ops].[PedidoItem]  WITH CHECK ADD  CONSTRAINT [FK_PedidoItem_Producto] FOREIGN KEY([ProductoId])
+REFERENCES [core].[Producto] ([ProductoId])
+GO
+ALTER TABLE [ops].[PedidoItem] CHECK CONSTRAINT [FK_PedidoItem_Producto]
+GO
+ALTER TABLE [ops].[Recepcion]  WITH CHECK ADD  CONSTRAINT [FK_Recepcion_Chofer] FOREIGN KEY([ChoferId])
+REFERENCES [core].[Chofer] ([ChoferId])
+GO
+ALTER TABLE [ops].[Recepcion] CHECK CONSTRAINT [FK_Recepcion_Chofer]
+GO
+ALTER TABLE [ops].[Recepcion]  WITH CHECK ADD  CONSTRAINT [FK_Recepcion_Estatus] FOREIGN KEY([EstatusId])
+REFERENCES [ref].[CatEstatus] ([EstatusId])
+GO
+ALTER TABLE [ops].[Recepcion] CHECK CONSTRAINT [FK_Recepcion_Estatus]
+GO
+ALTER TABLE [ops].[Recepcion]  WITH CHECK ADD  CONSTRAINT [FK_Recepcion_Pedido] FOREIGN KEY([PedidoId])
+REFERENCES [ops].[Pedido] ([PedidoId])
+GO
+ALTER TABLE [ops].[Recepcion] CHECK CONSTRAINT [FK_Recepcion_Pedido]
+GO
+ALTER TABLE [ops].[Recepcion]  WITH CHECK ADD  CONSTRAINT [FK_Recepcion_Sucursal] FOREIGN KEY([SucursalId])
+REFERENCES [core].[Sucursal] ([SucursalId])
+GO
+ALTER TABLE [ops].[Recepcion] CHECK CONSTRAINT [FK_Recepcion_Sucursal]
+GO
+ALTER TABLE [ops].[Recepcion]  WITH CHECK ADD  CONSTRAINT [FK_Recepcion_Usuario] FOREIGN KEY([UsuarioId])
+REFERENCES [core].[Usuario] ([UsuarioId])
+GO
+ALTER TABLE [ops].[Recepcion] CHECK CONSTRAINT [FK_Recepcion_Usuario]
+GO
+ALTER TABLE [ops].[RecepcionItem]  WITH CHECK ADD  CONSTRAINT [FK_RecepcionItem_Estatus] FOREIGN KEY([EstatusId])
+REFERENCES [ref].[CatEstatus] ([EstatusId])
+GO
+ALTER TABLE [ops].[RecepcionItem] CHECK CONSTRAINT [FK_RecepcionItem_Estatus]
+GO
+ALTER TABLE [ops].[RecepcionItem]  WITH CHECK ADD  CONSTRAINT [FK_RecepcionItem_Producto] FOREIGN KEY([ProductoId])
+REFERENCES [core].[Producto] ([ProductoId])
+GO
+ALTER TABLE [ops].[RecepcionItem] CHECK CONSTRAINT [FK_RecepcionItem_Producto]
+GO
+ALTER TABLE [ops].[RecepcionItem]  WITH CHECK ADD  CONSTRAINT [FK_RecepcionItem_Recepcion] FOREIGN KEY([RecepcionId])
+REFERENCES [ops].[Recepcion] ([RecepcionId])
+ON DELETE CASCADE
+GO
+ALTER TABLE [ops].[RecepcionItem] CHECK CONSTRAINT [FK_RecepcionItem_Recepcion]
+GO
+ALTER TABLE [ops].[Factura]  WITH CHECK ADD  CONSTRAINT [CK_Factura_Importe] CHECK  (([Importe]>=(0)))
+GO
+ALTER TABLE [ops].[Factura] CHECK CONSTRAINT [CK_Factura_Importe]
+GO
+ALTER TABLE [ops].[Pedido]  WITH CHECK ADD  CONSTRAINT [CK_Pedido_TotalesNN] CHECK  ((([TotalEsperadoPzas] IS NULL OR [TotalEsperadoPzas]>=(0)) AND ([TotalEsperadoKg] IS NULL OR [TotalEsperadoKg]>=(0))))
+GO
+ALTER TABLE [ops].[Pedido] CHECK CONSTRAINT [CK_Pedido_TotalesNN]
+GO
+ALTER TABLE [ops].[PedidoItem]  WITH CHECK ADD  CONSTRAINT [CK_PedidoItem_NN] CHECK  ((([CantidadEsperada] IS NULL OR [CantidadEsperada]>=(0)) AND ([PesoEsperadoKg] IS NULL OR [PesoEsperadoKg]>=(0))))
+GO
+ALTER TABLE [ops].[PedidoItem] CHECK CONSTRAINT [CK_PedidoItem_NN]
+GO
+ALTER TABLE [ops].[Recepcion]  WITH CHECK ADD  CONSTRAINT [CK_Recepcion_Totales] CHECK  ((([TotalRecibidoPzas] IS NULL OR [TotalRecibidoPzas]>=(0)) AND ([TotalRecibidoKg] IS NULL OR [TotalRecibidoKg]>=(0))))
+GO
+ALTER TABLE [ops].[Recepcion] CHECK CONSTRAINT [CK_Recepcion_Totales]
+GO
+ALTER TABLE [ops].[RecepcionItem]  WITH CHECK ADD  CONSTRAINT [CK_RecepcionItem_NN] CHECK  ((([CantidadEsperada] IS NULL OR [CantidadEsperada]>=(0)) AND ([CantidadRecibida] IS NULL OR [CantidadRecibida]>=(0)) AND ([PesoEsperadoKg] IS NULL OR [PesoEsperadoKg]>=(0)) AND ([PesoRecibidoKg] IS NULL OR [PesoRecibidoKg]>=(0))))
+GO
+ALTER TABLE [ops].[RecepcionItem] CHECK CONSTRAINT [CK_RecepcionItem_NN]
+GO
+USE [master]
+GO
+ALTER DATABASE [iuv] SET  READ_WRITE 
+GO
