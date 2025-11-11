@@ -38,24 +38,24 @@ namespace ProyectoEscolar.AccesoDatos.Data
             });
 
             // Configurar Sucursal
-            modelBuilder.Entity<Sucursal>(entity =>
-            {
-                entity.Property(s => s.Activo)
-                      .HasDefaultValueSql("1");
+            //modelBuilder.Entity<Sucursal>(entity =>
+            //{
+            //    entity.Property(s => s.Activa)
+            //          .HasDefaultValueSql("1");
 
-                entity.Property(s => s.FechaCreacion)
-                      .HasDefaultValueSql("GETDATE()");
-            });
+            //    entity.Property(s => s.FechaCreacion)
+            //          .HasDefaultValueSql("GETDATE()");
+            //});
 
             // Configurar CatRol
-            modelBuilder.Entity<CatRol>(entity =>
-            {
-                entity.Property(r => r.Activo)
-                      .HasDefaultValueSql("1");
+            //modelBuilder.Entity<CatRol>(entity =>
+            //{
+            //    entity.Property(r => r.Activo)
+            //          .HasDefaultValueSql("1");
 
-                entity.Property(r => r.FechaCreacion)
-                      .HasDefaultValueSql("GETDATE()");
-            });
+            //    entity.Property(r => r.FechaCreacion)
+            //          .HasDefaultValueSql("GETDATE()");
+            //});
 
             // Configurar LogEntry para Serilog
             modelBuilder.Entity<LogEntry>(entity =>

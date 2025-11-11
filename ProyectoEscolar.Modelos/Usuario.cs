@@ -50,14 +50,11 @@ namespace ProyectoEscolar.Modelos
         public string Nombre { get; set; } = string.Empty;
         
         [MaxLength(300)]
-        public string? Direccion { get; set; }
-        
-        [MaxLength(20)]
-        public string? Telefono { get; set; }
-        
-        public bool Activo { get; set; } = true;
-        
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public string? Clave { get; set; }
+                
+        public bool Activa { get; set; } = true;
+
+        public string? Contrasena { get; set; } 
 
         // Navigation Properties
         public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
@@ -74,13 +71,7 @@ namespace ProyectoEscolar.Modelos
         [MaxLength(100)]
         public string Nombre { get; set; } = string.Empty;
         
-        [MaxLength(500)]
-        public string? Descripcion { get; set; }
-        
-        public bool Activo { get; set; } = true;
-
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
-
+       
         // Navigation Properties
         public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
     }
