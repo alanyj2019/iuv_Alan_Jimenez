@@ -27,7 +27,7 @@ namespace ProyectoEscolar.Api.Controllers
         }    
 
         [HttpGet("test-logs")]
-        public ModelRepsonse TestLogs()
+        public ModelResponse TestLogs()
         {
             try
             {
@@ -46,7 +46,7 @@ namespace ProyectoEscolar.Api.Controllers
                     _logger.LogError(ex, "Excepción capturada durante prueba de logs");
                 }
 
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = true,
                     Message = "Logs de prueba generados exitosamente",
@@ -60,7 +60,7 @@ namespace ProyectoEscolar.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, "Error crítico durante prueba de logs");
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = false,
                     Message = "Error durante prueba de logs",
@@ -70,17 +70,17 @@ namespace ProyectoEscolar.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ModelRepsonse> GetToken([FromBody] LoginRequest request)
+        public async Task<ModelResponse> GetToken([FromBody] LoginRequest request)
         {
             try
             {
                 _logger.LogInformation("Intento de login para usuario: {Usuario}", request.Usuario);
-                
-                // Validar modelo
+
+                // Validar modelo contra las validaciones de datos
                 if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("Datos de entrada inválidos para login del usuario: {Usuario}", request.Usuario);
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = false,
                         Message = "Datos de entrada inválidos",
@@ -100,7 +100,7 @@ namespace ProyectoEscolar.Api.Controllers
                     
                     _logger.LogInformation("Login exitoso para usuario: {Usuario}", request.Usuario);
                     
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = true,
                         Message = "Token generado exitosamente",
@@ -116,7 +116,7 @@ namespace ProyectoEscolar.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error interno durante el login del usuario: {Usuario}", request.Usuario);
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = false,
                     Message = $"Error interno del servidor: {ex.Message}",
@@ -126,7 +126,7 @@ namespace ProyectoEscolar.Api.Controllers
         }
 
         [HttpPost("cambiar-contrasena")]
-        public async Task<ModelRepsonse> CambiarContrasena([FromBody] CambiarContrasenaRequest request)
+        public async Task<ModelResponse> CambiarContrasena([FromBody] CambiarContrasenaRequest request)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace ProyectoEscolar.Api.Controllers
                 if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("Datos inválidos para cambio de contraseña del usuario: {Usuario}", request.Usuario);
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = false,
                         Message = "Datos de entrada inválidos",
@@ -150,7 +150,7 @@ namespace ProyectoEscolar.Api.Controllers
                 if (usuario == null)
                 {
                     _logger.LogWarning("Usuario no encontrado para cambio de contraseña: {Usuario}", request.Usuario);
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = false,
                         Message = "Usuario no encontrado",
@@ -162,7 +162,7 @@ namespace ProyectoEscolar.Api.Controllers
                 if (!PasswordHelper.VerificarContrasena(request.ContrasenaActual, usuario.Contrasena ?? ""))
                 {
                     _logger.LogWarning("Contraseña actual incorrecta para usuario: {Usuario}", request.Usuario);
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = false,
                         Message = "Contraseña actual incorrecta",
@@ -175,7 +175,7 @@ namespace ProyectoEscolar.Api.Controllers
                 if (!validacion.EsValida)
                 {
                     _logger.LogWarning("Nueva contraseña no cumple requisitos para usuario: {Usuario} - {Mensaje}", request.Usuario, validacion.Mensaje);
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = false,
                         Message = $"La nueva contraseña no cumple los requisitos: {validacion.Mensaje}",
@@ -189,7 +189,7 @@ namespace ProyectoEscolar.Api.Controllers
 
                 _logger.LogInformation("Contraseña actualizada exitosamente para usuario: {Usuario}", request.Usuario);
 
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = true,
                     Message = "Contraseña actualizada exitosamente",
@@ -199,7 +199,7 @@ namespace ProyectoEscolar.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al cambiar contraseña para usuario: {Usuario}", request.Usuario);
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = false,
                     Message = $"Error interno del servidor: {ex.Message}",
@@ -208,7 +208,7 @@ namespace ProyectoEscolar.Api.Controllers
             }
         }
 
-        private async Task<ModelRepsonse> ValidarCredenciales(string usuario, string password)
+        private async Task<ModelResponse> ValidarCredenciales(string usuario, string password)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace ProyectoEscolar.Api.Controllers
                 if (usuarioDb == null)
                 {
                     _logger.LogWarning("Usuario no encontrado o inactivo durante validación: {Usuario}", usuario);
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = false,
                         Message = "Usuario no encontrado o inactivo",
@@ -245,7 +245,7 @@ namespace ProyectoEscolar.Api.Controllers
                         _logger.LogInformation("Contraseña cifrada y guardada por primera vez para usuario: {Usuario}", usuario);
                     }
 
-                    return new ModelRepsonse
+                    return new ModelResponse
                     {
                         IsSuccess = esValida,
                         Message = esValida ? "Credenciales válidas" : "Credenciales inválidas",
@@ -258,7 +258,7 @@ namespace ProyectoEscolar.Api.Controllers
                 
                 _logger.LogDebug("Validación de contraseña completada para usuario: {Usuario} - Válida: {EsValida}", usuario, passwordValida);
 
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = passwordValida,
                     Message = passwordValida ? "Credenciales válidas" : "Credenciales inválidas",
@@ -268,7 +268,7 @@ namespace ProyectoEscolar.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error durante la validación de credenciales para usuario: {Usuario}", usuario);
-                return new ModelRepsonse
+                return new ModelResponse
                 {
                     IsSuccess = false,
                     Message = "Error al validar credenciales",

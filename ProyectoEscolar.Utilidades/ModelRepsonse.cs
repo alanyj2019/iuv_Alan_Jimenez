@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProyectoEscolar.Utilidades
 {
-    public class ModelRepsonse
+    public class ModelResponse
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }

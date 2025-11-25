@@ -91,7 +91,7 @@ app.Use(async (context, next) =>
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        var response = new ModelRepsonse
+        var response = new ModelResponse
         {
             IsSuccess = false,
             Message = "Ha ocurrido un error interno del servidor",
